@@ -44,11 +44,11 @@ path awareness and multiply-connected networks (e.g. SPUD, PLUS, BANANA).
 Administrative details
 ----------------------
 
-Chairs: Brian Trammell, second chair TBD
+Chairs: Brian Trammell and Jen Linkova
 
 Mailing List: [panrg@irtf.org](mailto:panrg@irtf.org)
 
-Meetings: The PAN(P)RG currently intends to meet at each IETF meeting until a
+Meetings: The PAN(P)RG intends to meet at each IETF meeting until a
 determination is made whether or not to charter it. Afterward, the RG intends to
 meet at 2-3 IETF meetings per year, and up to one workshop colocated with a
 related academic conference per year.
