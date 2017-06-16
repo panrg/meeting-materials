@@ -50,5 +50,5 @@ Mailing List: [panrg@irtf.org](mailto:panrg@irtf.org)
 
 Meetings: The PAN(P)RG intends to meet at each IETF meeting until a
 determination is made whether or not to charter it. Afterward, the RG intends to
-meet at 2-3 IETF meetings per year, and up to one workshop colocated with a
-related academic conference per year.
+meet at 1-3 IETF meetings per year, and hold one workshop per year, colocated
+with a related academic conference.
