@@ -8,6 +8,7 @@ Agenda
 
 - *Agenda / Note Well / Introduction* Jen Linkova and Brian Trammell, 10 min
 - *A Decade of Path Awareness* Olivier Bonaventure, 20 min
+- *Google SDN for public internet* Sam Aldrin, 10 min
 - *SCION, A Path-Aware Internet Architecture:* Adrian Perrig, 20 min
 - *Discussion* including next steps to RG formation, 30 min
 

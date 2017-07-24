@@ -1,0 +1,279 @@
+IETF 99
+Wednesday July 19 2017, 13:30-15:00
+Path Aware Networking Proposed RG (PANRG)
+
+Brian Trammell & Jen Linkova
+Many thanks to Tommy Pauly for taking notes!
+
+Agenda / Note Well / Introduction Jen Linkova and Brian Trammell, 10 min
+========================================================================
+
+Many different IETF projects that are in the area of path-awareness:
+
+- Multipath protocols are the obvious item (MPTCP, future QUIC)
+- Hybrid access (BANANA, MPTCP)
+- Path control (SFC, SPRING)
+- Dynamic interface selection (MIF/PvD, TAPS)
+- Path signalling (StackEvo, SPUD/PLUS, ALTO)
+
+There are others, this is just a selection! Exploring how these all work is a
+good theme for a new RG.
+
+Path awareness? Typical model has two endpoints, with a network that routes
+traffic on different paths (think BGP routing). MPTCP often just knows its
+interfaces. The far end of this model is having full path awareness throughout
+the network, endpoints and routers.
+
+Isn't all routing "path aware"? The point here is pusing this to the edge, having the endpoints be more path aware.
+
+Many hard problems:
+- Idea of what the best path may conflict between the host and the network
+- When do I use which path for a packet?
+- What are the timing issues between path changes?
+- What are the semantics for path properties? (High bandwidth, low delay, etc, etc)
+- Privacy: what should I tell the path?
+- Trust: how can I trust what the path tells me?
+
+A Decade of Path Awareness Olivier Bonaventure, 20 min
+======================================================
+
+A look back at previous experiences in trying to be path aware, and works and doesn't.
+
+The starting point is the early internet, with one interface to connect into the
+interface. Routers had multiple interfaces. The difference between a host and
+router was that the host only had one interface. However, today the end hosts
+all have multiple interfaces, and they have the CPU power to do complex work,
+often with more power than the routers themselves.
+
+What does the end host know about the network? Pretty much nothing other than
+there's another end. It's all a black box. One viewpoint from routing is that
+the host is dumb, and the network is smart. The routers need to select paths for
+the clients. Another viewpoint from reliability is that the host is intelligent,
+and it is responsible for making the connection work (retransmission, etc)
+
+What is path awareness? It's made up of control plane (what are the paths, and
+their characteristics?) and data plane (how can I tell the network which path to
+use for my packets)
+
+In first-gen routing protocols, like RIP, all that matters is connectivity.
+Other paths are failover only. In second-gen protocols, you can do MPLS, and
+multipath routing
+
+How can the end host try to select paths?
+
+Failed opportunities:
+
+- IPv4 source routing, killed for security reasons
+- Integrated services/QoS, flows mark their requirements. IETF adopted
+  signalling via RSVP. However, this didn't select the path, but just reserved
+  resources.
+- Differentiated service/ToS, DSCP markings, but there's no interaction between
+  endhosts and routing
+- IPv6 source routing, also with security problems
+
+Path awareness in multihoming is possible when you have multiple interface, and
+so you can select paths with multiple interfaces. Early model was running a
+routing protocol on the host with multiple interfaces. Shim6 and HIP had stable
+endpoint identifiers, but this wasn't available to the transport, and isn't
+deployed. LISP is another solution with host identifiers, but still the end
+hosts are blind.
+
+MPTCP is a transport level solution that is aware of the multiple interface
+(such as on a phone with Wi-Fi and Cellular). This adds coupled congestion
+control, and handling retransmissions and reinjections. This taught us that it
+was very important for the transport to be explicitly aware of the paths.
+
+IPv6 Segment Routing is also a way of controlling the path through the network,
+and should allow the endhost to encode routes within a single domain. However,
+there's no discovery of paths. One way to learn this is by pushing segment
+routing information along with DNS responses.
+
+Also be aware that there's a political layer here: from the operator viewpoint,
+it sees things like a post office. It has responsibility for delivery. The end
+user thinks of itself like a car driver, which has many roads to be able to
+choose dynamically.
+
+Summary, three questions to address in any drive to add path-awareness to the architecture:
+- Scalability?
+- Security?
+- Simplicity?
+    
+
+Google SDN for public internet Sam Aldrin, 10 min
+=================================================
+
+Espresso, SDN for public internet solution in Google.
+
+Google's network has a very structured collection of networks for cloud
+services. Growing at 10x rate for datacenters, campuses, and
+WANs. How to grow without disruption of the network's capacity? Be able to scale
+up and down.
+
+In the recent past, have rolled out different infrastructures. B4 system handles
+WAN, Andromeda handles network virtualization, and Jupiter handles datacenter
+networking. The scale of the networks was 1.3Pb/s in 2013, and still growing
+quickly.
+
+This comes along with operational cost, equipment cost, and scaling. So added a
+new module, Espresso, which is an SDN for the public internet. Optimizes for
+services rather than connectivity and shortest paths.
+
+External peer connects to the peering fabric with BGP. This information is
+available to the controller to program the flows. Can control the egress paths
+(using MPLS internally) based on the client application's needs over the known
+flows.
+
+Challenges are in trying to scale both the compute and storage.
+
+
+SCION, A Path-Aware Internet Architecture Adrian Perrig, 20 min
+===========
+
+SCION is a secure internet architecture for inter-domain path-awareness and
+routing. Main goals:
+
+- High availability, use network as long as connectivity exists over some path
+  without an adversary on it
+- Trust should be flexible and up to the entities to decide
+- Transparent routing and operations
+- Control shared between ISPs, senders, and receivers
+- Scalable, efficient, and flexible
+    
+Basic principle is Isolation Domain (ISD), which split up groups of autonomous
+systems (AS). Core AS'es in the ISD send routing beacons to all other AS'es they
+link to, and the non-core AS'es pass along the messages. Path properties are
+passed in the beacons. Each path segment learned via beacons is considered Up
+(towards core) or Down (towards edge) Each AS learns the set of paths available
+to it, both Up and Down.
+
+To get a set of paths for a host, there is a name resolution protocol RAINS that
+finds the path segments available to send via AS'es. The path selection is
+constrained to going Up, across Cores, and Down. This same model works across
+Isolation Domains, and there may be peering links across AS'es in the same and
+different ISDs. Paths are cryptographically protected at two levels—both with
+more expensive signatures, and cheap MACs for path markers on packets. Note that
+while the path may logically go through a higher level or the core, the packets
+can be routed directly. Due to the MAC, and attacker cannot redirect packets
+through unexpected AS'es.
+
+Architecture is a total redesign that attempts to address many fundamental
+security and routing problems on the internet. Book is avilable at
+www.scion-architecture.net
+
+
+Discussion including next steps to RG formation, 30 min
+=======================================================
+
+Dave Plonka: I really liked Olivier's talk. In the point about operators vs.
+users, the word that may be appropriate is "expectations" on each side. Where do
+the user and operator expectations fit in to each model?
+
+Olivier: I think it's a hard point to be able to convey the expectations, and
+it's failed before with differentiated services. How can we formalize
+expectations in a usable way? 
+
+Adrian: These are really interesting research questions
+
+Andrew McGregor: Does Google look like a relatively small number of very path
+aware hosts in the new espresso architecture?
+
+Sam: It's pretty transparent from the services side
+
+Spencer Dawkins: Can I ask how many people worked on failed path-aware
+networking attempts? [A few dozen hands go up]. It's imporant to note the
+political aspects of this. When Shim6 was presented to the operators, it was
+pretty bad. With the research aspect to this, that will be helpful. As transport
+AD, excited that this is in IRTF.
+
+Bob Briscoe: I didn't raise my hand, even though I worked on these, because
+these looks were mainly static about routing, but I've been working on
+understanding the dynamic state.
+
+Olivier: There are two parts: knowing what the paths are first, and then being
+able to take into account the temporal aspects of the multiple paths. If I do
+MPTCP, and I only have one path that goes bad, should I just try opening another
+flow? Path awareness would help unveil this.
+
+Lars Eggert: Spencer distracted the discussion, perhaps, because this is not a
+WG-forming thing. It's about research. As a point on Olivier's presentation, I
+agree that the host doesn't know the routing, but it knows a lot about the path
+when it is using it based on its transport. Also note that with QUIC, don't
+assume that everything will look like TCP from now on. I think this makes sense
+for IRTF, since it is something that needs time to be fleshed out. 
+
+Olivier: It's the intersection between routing and transport, and many point are
+not in that bucket.
+
+Andrew: From the perspective of all parties, the packets are a bet about the
+future, based on the path. If we know what we expected as far as change in the
+path, that would help to make better selections.
+
+Olivier: It may be difficult to guess what will happen based on the path. In a
+large cloud provider, which has multiple data centers, when they open a TCP
+connection, it will be load balanced across multipl MPLS tunnel. Depending on
+which connection you open, the delays vary by 10s of milliseconds.
+
+Mirja Kühlewind: There's a tension between who can select the path, between host
+and routers. We don't necessarily need to have explicit coordination, but we do
+need to study how the interactions may go. I enjoyed all of these topics, and
+thank you for sharing. One document that would be useful is to catalog all of
+the previous attempts and how they worked and didn't.
+
+Colin Perkins: With regards to the presentations, we should include not only
+transport and routing, but also measurement. Happy Eyeballs and other approaches
+employ measurements of the paths to understand the paths.
+
+Brian: I have thoughts. Something like SCION is far out. But there's a
+transition. What we have today is all measurement based in transports. We need
+to take the step towards hints from the paths, and then get to trusted
+information and guarantees from the paths. We should pull the measurement stuff
+in to see how we've learned from that. 
+
+Tim Chown: Very interesting, support an RG being formed. Stuff like updating
+Happy Eyeballs is happening today. Also multihoming in IPv6, looking at PvDs,
+etc. What extent can we talk about that.
+
+Jen: Thanks for mentioning provisioning domains, since they are related.
+
+Brian: Please do send your favorite path aware thing to the list, so we know
+what we don't know yet! Start with knowledge pooling at the beginning.
+
+Raji: Interesting, but may be useful to describe the problem more clearly. Are
+we trying to be path aware on both the User Equipment and the server side? On
+the Google side, what Sam present, the paths are very important for the backend
+to serve content. Most data is going from the servers to clients. Is the client
+path useful? Yes, for interface selection. But we should describe the problem
+more clearly.
+
+Brian: There are different architectures for many services. Think of interactive
+video, in which case both peers need to be aware. Maybe content delivery has
+solved some problems, but maybe the UE can help with this if they are aware.
+
+Raji: But if the UE only has one interface, it doesn't seem to have much choice.
+
+Olivier: You may still have more path awareness even on one interface (IPv4,
+IPv6, etc)
+
+Spencer: Support of Mirja's suggestion to do survey of previous attempts
+
+Gorry: I've complained about IRTF overlapping with IETF WGs, but I think in this
+case we need to research how the Internet is changing, and how that changes our
+work on these areas.
+
+Aaron Falk: Worked previously on a way to let clients choose their own routing.
+We're trying to enable choice here, which has economic ties. It's not just about
+mechanism, if you want to do good things! I think we should add words to the
+charter about how this can benefit the user.
+
+Marcus Keane: Seconding comments on PvDs; it's about source selection for
+devices with a single interface, and to understand the characteristics of each
+domain, and enable choice.
+
+Allison: We can have a year of proposed research group before formal chartering.
+We're going to have review on this for perspective. I heard a lot of positives,
+and good organization. Some questions of transport vs routing, and the bad
+scheduling to not have many routing people in the room. We can fix that! Should
+also avoid IPv6 conflicts.
+
+
+
