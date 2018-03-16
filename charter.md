@@ -38,7 +38,7 @@ The research group's scope overlaps with existing IETF and IRTF efforts, and
 will collaborate with groups chartered to work on multipath transport protocols
 (MPTCP, QUIC, TSVWG), congestion control in multiply-connected environments
 (ICCRG), and alternate routing architectures (e.g. LISP), and is related to
-the questions risen in the multiple recent BoF sessions that have addressed
+the questions raised in the multiple recent BoF sessions that have addressed
 path awareness and multiply-connected networks (e.g. SPUD, PLUS, BANANA).
 
 Administrative details
