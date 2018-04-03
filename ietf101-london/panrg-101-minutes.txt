@@ -2,10 +2,16 @@
 
 # Service Aware Networking using SR, presented by D. Bernier
 
+    Brian Trammell (chair hat off): 
+        Data plane is clear. Control plane — how do you get path properties
+         to the edge — is the focus?
+        
+        Putting path property at the ends is easy, there are many ways, e.g., 
+        path signaling. Main challenge: how does one know customer wants a 
+        particular property? How can this be automated? 
 
-    Brian Trammel (chair hat off): Data plane is clear. Control plane — how do you get path properties to the edge — is the focus?
-        Putting path property at the ends is easy, there are many ways, e.g., path signaling. Main challenge: how does one know customer wants a particular property? How can this be automated? 
     Rüdiger Volk: Is point about how to make the network application aware?
+        
         Service-awareness does not mean that application awareness. 
         Challenge in the beginning is ability to configure quickly without overhead.
 
@@ -13,94 +19,223 @@
 
 # Path Awareness with Socket Intents, presented by T. Enghardt
 
+    Richard: How much granularity are you willing to allow? 
+    Different paths may have different policies. Are you planning on 
+    integrating this into the API?
 
-    Richard: How much granularity are you willing to allow? Different paths may have different policies. Are you planning on integrating this into the API?
-        Not yet, there’s more room for collecting path information. Are there middleboxes, is anything blocked, etc? We’re blocked by the socket API.
-    Richard: Flow dynamics change over time and may be different from the start of a connection. Bandwidth may change as a function of different bottlenecks. (Taken offline.)
-    Lee Howard: How does per-prefix (and address family) latency interact with or Happy Eyeballs? Do you do your own socket setup instead of what’s in the OS?
+        Not yet, there’s more room for collecting path information. 
+        Are there middleboxes, is anything blocked, etc? We’re blocked by 
+        the socket API.
+
+    Richard: Flow dynamics change over time and may be different from 
+    the start of a connection. Bandwidth may change as a function of 
+    different bottlenecks. (Taken offline.)
+
+    Lee Howard: How does per-prefix (and address family) latency interact
+    with or Happy Eyeballs? Do you do your own socket setup instead of 
+    what’s in the OS?
+
         We don’t use HE — just POSIX sockets.
-    Olivar Tilmans: How would handle the situation when dealing with a middlebox or proxy?
-        We can differentiate SRTT per endpoint and then hope not every flow is subject to the proxy or middle box. But of course this scenario makes it harder to get an accurate path RTT estimate.
-    Fabian Schneider: Connection receiver does not know intent of the receiver. Have you looked at ways to send intents to the peer?
-        Intents are meant to be local policies. Applications must use the API to utilize intents. Not exchanged.
-        Application interaction could convey intents to the other side, and peers could respond to application behavior accordingly. (?)
+    
+    Olivier Tilmans: How would handle the situation when dealing with a 
+    middlebox or proxy?
+    
+        We can differentiate SRTT per endpoint and then hope not every flow 
+        is subject to the proxy or middle box. But of course this scenario 
+        makes it harder to get an accurate path RTT estimate.
+    
+    Fabian Schneider: Connection receiver does not know intent of the 
+    receiver. Have you looked at ways to send intents to the peer?
 
+        Intents are meant to be local policies. Applications must use the API 
+        to utilize intents. Not exchanged. Application interaction could 
+        convey intents to the other side, and peers could respond to 
+        application behavior accordingly.
 
 # FAST, presented by T. Herbert
 
-
     DKG: What happens if both providers have the same scheme?
-        Tickets may be used bidirectionally — two tickets per packet, where one is local and the other, reflected. 
-    Aaron Falk: What happens if the number of packets flowing in one direction does not match that in the other direction? What do you do with the excess tickets?
-        Each packet may have a (per-flow) ticket — sort of as a flow identifier. 
-    Fabian Schneider: Why did you not explore multiple tickets, where some are scoped to specific networks?
-        We thought about using AS numbers to associate with a ticket, but stuck with at most two (one for each direction). 
-    Fabian Schneider: You might still want each network to have a ticket agent that assigns tickets to local processing, but that’s not possible with one ticket per direction. 
-        You get tickets from local network. If you want more elaborate schemes, you need to contact other agents in other networks. You can schedule an entire path if you use segment routing, for example.
+
+        Tickets may be used bidirectionally — two tickets per packet, 
+        where one is local and the other, reflected. 
+
+    Aaron Falk: What happens if the number of packets flowing in one direction
+     does not match that in the other direction? What do you do with the 
+     excess tickets?
+
+        Each packet may have a (per-flow) ticket — sort of as a flow 
+        identifier. 
+
+    Fabian Schneider: Why did you not explore multiple tickets, where some are
+    scoped to specific networks?
+
+        We thought about using AS numbers to associate with a ticket, but stuck
+        with at most two (one for each direction). 
+
+    Fabian Schneider: You might still want each network to have a ticket agent 
+    that assigns tickets to local processing, but that’s not possible with one 
+    ticket per direction. 
+
+        You get tickets from local network. If you want more elaborate 
+        schemes, you need to contact other agents in other networks. You can 
+        schedule an entire path if you use segment routing, for example.
+
     Fabian Schneider: How large do you want the tickets to be?
+
         As small as possible, but deferred for now.
-    Uma (Huawei): How do intermediate nodes verify destination options? Does this not need to be a hop-by-hop option? 
-        An interesting story. Hop-by-hop options are more likely to be dropped. 
+
+    Uma (Huawei): How do intermediate nodes verify destination options? 
+    Does this not need to be a hop-by-hop option? 
+
+        An interesting story. Hop-by-hop options are more likely to be 
+        dropped. 
+
     Uma: Why wasting extra space for this option? Why not use the ILA?
-        Number of bits available there is small. If it’s possible, that’d be great.
-    Alan Chelek: Is there any way you imagine the network attaching something that says it obeyed the ticket? Or is there a way to communicate ticket expiration?
-        We’ve not really specified many characteristics of tickets. You probably could do this, though it would impact the application-facing API. It’s not clear how dynamic this process would be — should one be able to rotate tickets every N minutes? 
-    Alan Chelek: There may be cases where you want the network to state that its honoring the ticket since you may rely on it.
-    Richard : How do you prevent people from hijacking tickets? How do you bind them to packets? Do you really need tickets if there’s another way to bind them to packets?
-        Binding (e.g. to a 4 tuple) would be stateful, but we’d like to avoid that since it’s stateful. We want to avoid stateful tracking. 
+
+        Number of bits available there is small. If it’s possible, 
+        that’d be great.
+
+    Alan Chelek: Is there any way you imagine the network attaching 
+    something that says it obeyed the ticket? Or is there a way to communicate
+    ticket expiration?
+
+        We’ve not really specified many characteristics of tickets. You 
+        probably could do this, though it would impact the application-facing 
+        API. It’s not clear how dynamic this process would be — should one be 
+        able to rotate tickets every N minutes? 
+
+    Alan Chelek: There may be cases where you want the network to state that 
+    it's honoring the ticket, since you may rely on it.
+
+    Richard : How do you prevent people from hijacking tickets? How do you 
+    bind them to packets? Do you really need tickets if there’s another way 
+    to bind them to packets?
+
+        Binding (e.g. to a 4 tuple) would be stateful, but we’d like to avoid 
+        that since it’s stateful. We want to avoid stateful tracking. 
+
     Richard: You’re matching the matching part in the ticket?
-        If we want to restrict tickets to a 4 tuple, we may hash the 4 tuple and include it in the ticket. 
-    Volk: Not optimistic about getting support for long header chains for any reason. You seem to be taking care of stuff that happens in the originator’s domain. As you pass that boundary, things are forward transparently. A clear statement about what kind of service could be controlled this way is needed. Do we need more negotiation if we want to extend beyond this boundary?
-        The only entity the application talks to is the local network. Application only needs to know that a packet “belongs to” a path. If there is to be negotiation, that would need to be done by the initiator to each of the successor networks. However, maybe the ticket already has meaning to other networks that the application is unaware of. 
-    DKG: Network provider may not want to deliver voice traffic to the user. Can users protect themselves against adversarial networks that use tickets for malicious purposes.
-        Users need to trust the network. If users request service A and that’s not available, then there’s nothing to be done. Application would need to decide it’s getting the service it paid for. 
-    Frank Bronkers: 
-        It would be nice if the application did not have to request every individual ticket. It could become costly to request one each for each packet. Is there a way to allow the application to generate identifiers so it doesn’t have to talk to the agent each time.
-    Frank: Have you looked at other encapsulations beyond V6 and destination options? What about V4 or MPLS?
+
+        If we want to restrict tickets to a 4 tuple, we may hash the 4 tuple 
+        and include it in the ticket.
+
+    Ruediger Volk: Not optimistic about getting support for long header chains
+    for any reason. You seem to be taking care of stuff that happens in the
+    originator’s domain. As you pass that boundary, things are forward
+    transparently. A clear statement about what kind of service could be 
+    controlled this way is needed. Do we need more negotiation if we want to 
+    extend beyond this boundary?
+
+        The only entity the application talks to is the local network. 
+        Application only needs to know that a packet “belongs to” a path. If 
+        there is to be negotiation, that would need to be done by the 
+        initiator to each of the successor networks. However, maybe the 
+        ticket already has meaning to other networks that the application 
+        is unaware of. 
+
+    DKG: Network provider may not want to deliver voice traffic to the user. 
+    Can users protect themselves against adversarial networks that use tickets 
+    for malicious purposes.
+
+        Users need to trust the network. If users request service A and that’s
+        not available, then there’s nothing to be done. Application would
+        need to decide it’s getting the service it paid for. 
+
+    Frank Brockners: It would be nice if the application did not have to 
+    request every individual ticket. It could become costly to request one each 
+    for each packet. Is there a way to allow the application to generate 
+    identifiers so it doesn’t have to talk to the agent each time.
+
+    Frank: Have you looked at other encapsulations beyond V6 and destination 
+    options? What about V4 or MPLS?
+
         Those could be leveraged.
-    Brian Trammel: How big are these tickets?
+
+    Brian Trammell: How big are these tickets?
+        
         Goal: 16B
+
     DKG: Have you looked at DLEQ proofs from yesterday’s CFRG?
+
         Not yet — may consider.
+    
     Chris Wood: Those proofs can be batched, too, which may be good for performance.
-    ???
 
 
 # TAPS Architecture and Interface, presented by T. Pauly
 
 
-    Thomas Ekr: Which draft is the best to read with regards to ICE experience?
-        Probably the architecture document, though the API one may also help.
-    Colin Perkins: Architecture and interface will help, and the implementation draft has much longer advice.
-        Yes — these are all 00 and will be flushed out further.
-    Colin Perkins: The idea is to incorporate the ICE and Happy Eyeballs algorithms.
-    Aaron Falk: This is compatible with the socket intents work discussed earlier.
+    Toerless Eckert: Which draft is the best to read with regards to ICE experience?
 
+        Probably the architecture document, though the API one may also help.
+
+    Colin Perkins: Architecture and interface will help, and the implementation 
+    draft has much longer advice.
+
+        Yes — these are all 00 and will be flushed out further.
+
+    Colin Perkins: The idea is to incorporate the ICE and Happy Eyeballs algorithms.
+
+    Aaron Falk: This is compatible with the socket intents work discussed earlier.
 
 # Bad Ideas in Transport Signaling, presented by S. Dawkins
 
+    Toerless Eckert: We can make pigs fly provided there is 
+    business behind it. Simplicity and architecture are not the 
+    only reasons to sell things in the IETF. Providing more details 
+    there would help.
 
-    Toerless Eckert: We can make pigs fly provided there is business behind it. Simplicity and architecture are not the only reasons to sell things in the IETF. Providing more details there would help.
         See section 4.5.
-    Gorry: Useful to show people with new proposals who are reinventing work or doing things that failed. There are many BOFs like this.
-    Aaron Falk: IETF does not have monopoly on bad ideas. TCP over satellite was created to inform the satellite industry to inform them what *not* to do. People often forget that not all problems are global — the Internet is different in many different places.
+
+    Gorry: Useful to show people with new proposals who are reinventing 
+    work or doing things that failed. There are many BOFs like this.
+
+    Aaron Falk: IETF does not have monopoly on bad ideas. TCP over satellite 
+    was created to inform the satellite industry to inform them what *not* 
+    to do. People often forget that not all problems are global — the Internet
+    is different in many different places.
 
 
 # Next Steps
 
-
     Allison Mankin: hum for creating the RG. 
     [strong hum in support of approving the RG]
-    Spencer Dawkins: Take is that this work will happen in the IRTF or continues to happen in the IETF elsewhere. 
-    Toerless Eckert: What is the scope of the research? Perhaps someone should summarize aspects such as privacy that we need to address.
-    Brian Trammel:
-        Send a message to the list or a PR to the questions draft regarding new work.
-    Toerless Eckert: Interested in getting applications better paths, not necessarily 1 vs N paths.
-    Lee Howard: Questions draft is important and will help drive charter. May want to suggest rephrasing some bits and cite some omitted references.
-    Rüdiger Volk: Is the term “path aware” misleading? Main question asking is “what is the path?”, though that’s not needed at all layers. Perhaps the crucial question is how we communicate and use available services? If you invent a rich repertoire or taxonomy of services that may be used by lambdas in the transport, that would lead to better use for the output of the group. 
-    Spencer  Dawkins: Please look at RFC 7418 to learn what’s different between the IRTF and IETF.
-    Toerless  Dawkins: It would be good to have a self-classification for each draft that describes where it fits into the spectrum. 
-    Matt Mathis: Very cool ideas in this space. There are also cool ideas that were not deployed. One valuable thing this RG can do is bridging between good ideas and efforts in the past that had not been deployed. Helping people understand barriers to deployment would be useful. Summarizing comment: the Internet is different everywhere.
+
+    Spencer Dawkins: Take is that this work will happen in the IRTF or 
+    continues to happen in the IETF elsewhere. 
+
+    Toerless Eckert: What is the scope of the research? Perhaps someone 
+    should summarize aspects such as privacy that we need to address.
+
+    Brian Trammell: Send a message to the list or a PR to the questions 
+    draft regarding new work.
+
+    Toerless Eckert: Interested in getting applications better paths, 
+    not necessarily 1 vs N paths.
+
+    Lee Howard: Questions draft is important and will help drive charter. 
+    May want to suggest rephrasing some bits and cite some omitted references.
+
+    Rüdiger Volk: Is the term “path aware” misleading? Main question asking 
+    is “what is the path?”, though that’s not needed at all layers. Perhaps 
+    the crucial question is how we communicate and use available services? 
+    If you invent a rich repertoire or taxonomy of services that may be used 
+    by lambdas in the transport, that would lead to better use for the output 
+    of the group. 
+
+    Spencer Dawkins: Please look at RFC 7418 to learn what’s different 
+    between the IRTF and IETF.
+
+    Toerless Eckert: It would be good to have a self-classification for each 
+    draft that describes where it fits into the spectrum. 
+
+    Matt Mathis: Very cool ideas in this space. There are also cool ideas 
+    that were not deployed. One valuable thing this RG can do is bridging 
+    between good ideas and efforts in the past that had not been deployed. 
+    Helping people understand barriers to deployment would be useful. 
+    Summarizing comment: the Internet is different everywhere.
+
     Jake Holland: Consider adding “what to do” to the companion draft. 
-    Spencer  Dawkins: There’s another draft for that.
+    
+    Spencer Dawkins: There’s another draft for that.
 
