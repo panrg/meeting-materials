@@ -9,11 +9,11 @@
 | Time    | Length | What                                     | Who             |
 |---------|--------|------------------------------------------|-----------------|
 | 9:00    | 5m     | Welcome, Note Well, Agenda               | Chairs          |
-| 9:05    | 5m     | [Open Questions][1]: publication-ready?  | B. Trammell     |
-| 9:10    | 30m    | [What Not To Do][2]                      | S. Dawkins      |
-| 9:40    | 20m    | [Path Properties][3]                     | C. Kraehenbuehl |
-| 10:00   | 15m    | Analysis of Utility of a Path-Aware Network | S. Scherrer  |
-| 10:15   | 15m    | [Multipath Security Requirements][4]     | Y. Qu           |
+| 9:05    | 30m    | [What Not To Do][2]                      | S. Dawkins      |
+| 9:40    | 5m     | [Open Questions][1]: publication-ready?  | B. Trammell     |
+| 9:47    | 15m    | [Path Properties][3]                     | C. Kraehenbuehl |
+| 10:05   | 10m    | [Multipath Security Requirements][4]     | Y. Qu           |
+| 10:17   | 10m    | Analysis of Utility of a Path-Aware Network | S. Scherrer  |
 
 [1]: https://tools.ietf.org/html/draft-irtf-panrg-questions
 [2]: https://tools.ietf.org/html/draft-ietf-panrg-what-not-to-do
