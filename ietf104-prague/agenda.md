@@ -4,6 +4,8 @@
 
 *Chairs:* Jen Linkova and Brian Trammell
 
+**NOTE this is an agenda proposal; times and arrangements are not final**
+
 | Time    | Length | What                                     | Who             |
 |---------|--------|------------------------------------------|-----------------|
 | 9:00    | 5m     | Welcome, Note Well, Agenda               | Chairs          |
