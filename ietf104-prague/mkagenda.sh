@@ -1,0 +1,1 @@
+pandoc -M "title:PANRG Agenda IETF 104 Prague" --standalone --self-contained --css agenda.css agenda.md > agenda.html
