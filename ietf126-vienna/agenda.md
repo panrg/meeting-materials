@@ -8,4 +8,6 @@ Time  | Duration | Topic                                                        
 16:35 | 15m      | Suggestions for AS Security Profiles for secure and resilient Internet Paths | S. K. Khadka
 16:50 | 15m      | Guidelines for QUIC Multipath over SCION — Updates                      | T. Zäschke
 17:05 | 20m      | SCION specification - IS process feedback and future work               | N. Rustignoli
-17:25 | 30m      | Discussion: The future of PANRG                                         | Chairs
+17:25 | 10m      | Bridging the Gap: Translating TCP/IPv6 to MPTCP/SCION                   | L-C. Schulz
+17:35 | 10m      | Tailscale over SCION                                                    | T. John
+17:45 | 15m      | Discussion: The future of PANRG                                         | Chairs
