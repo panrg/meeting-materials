@@ -8,7 +8,7 @@ The Path Aware Networking Research Group (PANRG) met at IETF 126 in Vienna, Aust
 
 The meeting featured presentations on Autonomous System (AS) security profiles and a series of updates on SCION-related research, including the status of the core SCION specification drafts in the Independent Submission (IS) stream, Multipath QUIC over SCION, TCP/IPv6 to Multipath TCP (MPTCP) translation over SCION, and Tailscale integration with SCION. The session concluded with an open floor discussion regarding the future charter and direction of PANRG.
 
-Note-taking was led by Ryo Yanagida and Nicola Rustignoli. These minutes were generated from by Eric Rescorla's automatic minutes tooling, retrieved from https://ietfminutes.org/minutes/ietf126/index.html, as corrected by Ryo and Nicola's notes.
+Note-taking by Ryo Yanagida and Nicola Rustignoli. These minutes were generated from by Eric Rescorla's automatic minutes tooling, retrieved from https://ietfminutes.org/minutes/ietf126/index.html, as corrected by Ryo and Nicola's notes.
 
 ---
 
@@ -31,13 +31,13 @@ Co-chairs Brian Trammell and Jen Linkova opened the session, noting the IRTF Not
 * **Presenter:** Nicola Rustignoli
 * **Slides:** [SCION specification - IS process feedback and future work](https://datatracker.ietf.org/meeting/126/materials/slides-126-panrg-scion-specification-is-process-feedback-and-future-work-00)
 * **Discussion:**
-  * Nicola Rustignoli gave an update on the progress of the three core SCION specifications undergoing the Independent Submission (IS) stream process: the Control Plane, Data Plane, and PKI drafts.
-  * Recent draft updates incorporate feedback on SCION Control Message Protocol (SCMP) signaling, ConnectRPC updates, the UDP underlay, time synchronization requirements, and full ASN.1 modules for X.509-based trust materials.
-  * Future protocol evolution and research topics include post-quantum cryptographic algorithms for the PKI, alternate data planes (e.g., IPv6 extension headers), PCB extensions, and bringing SCION closer to end hosts.
+  * Nicola Rustignoli gave an update on the progress of the three core SCION specifications, that were recently finalized  through the Independent Submission (IS) stream process: the Control Plane, Data Plane, and PKI drafts.
+  * Recent draft updates incorporate feedback on SCION Control Message Protocol (SCMP) signaling, RPC updates, UDP underlay clarifications, time synchronization requirements, and full ASN.1 modules for X.509-based trust materials.
+  * Since the specification drafts document the current protocol as deployed, some topics were left for future protocol evolution. They include post-quantum cryptographic algorithms for the PKI, alternate data planes (e.g., IPv6 extension headers), PCB extensions, and bringing SCION closer to end hosts.
   * **Q&A:**
-    * **Ryo Yanagida** asked what SCION brings to the end host. Nicola Rustignoli noted ongoing research regarding multipath transport (like Multipath QUIC), naming systems, and SCION addressing.
+    * **Ryo Yanagida** asked what SCION brings to the end host. Nicola Rustignoli noted ongoing research regarding multipath transport (like Multipath QUIC), naming (where to place SCION addresses towards endpoints).
     * **Brian Trammell** remarked that splitting SCION into three drafts provides standardizable components that serve as a strong foundation for future research in PANRG.
-    * **Colin Perkins** agreed, noting that documenting these components is a significant milestone and encouraged taking the work to the IETF for standardization once sufficient interest builds.
+    * **Colin Perkins** agreed, noting that documenting these components is a significant milestone and encouraged taking the work to the IETF for standardization once sufficient interest builds. Nicola Rustignoli agrees.
 
 ### 4. Guidelines for QUIC Multipath over SCION — Updates
 * **Presenter:** Tilmann Zäschke
@@ -50,15 +50,15 @@ Co-chairs Brian Trammell and Jen Linkova opened the session, noting the IRTF Not
   * Additional ideas for future work include establishing end-host path selection recommendations (to trim down the thousands of available paths) and anti-spoofing filtering rules for border routers and end hosts.
   * Tilmann reminded attendees that following the hackathon, connectivity to the public SCION network is available directly from the IETF meeting network.
   * **Q&A:**
-    * **Brian Trammell** asked how the situation where SCION does not reach the host itself on the client side fits into this. Tilmann Zäschke suggested translation mechanisms like NATs mapping traffic to unique ports.
+    * **Brian Trammell** asked how the situation where SCION does not reach the host itself on the client side fits into the attack described. Tilmann Zäschke mentioned that this scenario was not considered, but suggested that translation mechanisms like NATs would mapp traffic to unique ports, possibly avoiding the attack.
     * **Colin Perkins** questioned the assumption of IP uniqueness within a single AS, noting he encountered this issue while working on NAT Traversal. Tilmann Zäschke noted this is not worse than standard QUIC;  port numbers must be taken into account where NAT is present
 
 ### 5. Bridging the Gap: Translating TCP/IPv6 to MPTCP/SCION
 * **Presenter:** Lars Christian Schulz
 * **Slides:** [Bridging the Gap: Translating TCP/IPv6 to MPTCP/SCION](https://datatracker.ietf.org/meeting/126/materials/slides-126-panrg-bridging-the-gap-translating-tcpipv6-to-mptcpscion-00)
 * **Discussion:**
-  * Lars Christian Schulz presented "SCITRA" / "SiTRA" (SCION IP Translator), which performs stateless translation between IPv6 and SCION to enable legacy applications to run over SCION without modification. 
-  * SiTRA maps SCION's ISD, AS, and host address parts into a single IPv6 address (e.g., using an `FC00::/8` prefix).
+  * Lars Christian Schulz presented "SCITRA" (SCION-IP Translator), which performs stateless translation between IPv6 and SCION to enable legacy applications to run over SCION without modification. 
+  * SCITRA maps SCION's ISD, AS, and host address parts into a single IPv6 address (e.g., using an `FC00::/8` prefix).
   * Lars discussed ongoing, unpublished work translating Multipath TCP (MPTCP) to SCION. The translator generates "surrogate" IPv6 addresses for the kernel's MPTCP path manager so that different MPTCP subflows are mapped to distinct physical SCION paths.
   * He also highlighted "in-band telemetry," a project allowing end hosts to query path metrics directly from SCION border routers using hop-by-hop extension headers processed on the fast path.
   * **Q&A:**
@@ -78,7 +78,7 @@ Co-chairs Brian Trammell and Jen Linkova opened the session, noting the IRTF Not
 * **Leads:** Brian Trammell and Jen Linkova
 * **Slides:** [Chair Slides](https://datatracker.ietf.org/meeting/126/materials/slides-126-panrg-chair-slides-02)
 * **Discussion:**
-  * Brian Trammell initiated a discussion on the future of PANRG, proposing a high-level framing question: *"What should endpoints and networks tell each other, and how should they act on it?"*
+  * Brian Trammell initiated a discussion on the future of PANRG. On one side, Since the SCION specificaton drafts went to the Independent Submission, there has been a lot of research work done on top of SCION, but not other path-aware architectures, feeling that interest has converged on SCION. Besides that, he noticed that often broader topics are  borught to the RG. He therefore proposes a high-level framing question: *"What should endpoints and networks tell each other, and how should they act on it?"*
   * **Dave Oran** cautioned that the framing might be too broad. He proposed three narrower research areas:
     1. *Traffic Engineering vs. Endpoint Control:* Analyzing the trade-offs and power balance between operators doing traffic engineering and endpoints selecting paths.
     2. *Path Explosion and Equivalence Classes:* Designing algorithms at the edge and core to group thousands of paths into a small number of practical equivalence classes to prevent routing overhead.
