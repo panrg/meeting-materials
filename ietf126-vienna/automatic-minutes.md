@@ -50,8 +50,8 @@ Co-chairs Brian Trammell and Jen Linkova opened the session, noting the IRTF Not
   * Additional ideas for future work include establishing end-host path selection recommendations (to trim down the thousands of available paths) and anti-spoofing filtering rules for border routers and end hosts.
   * Tilmann reminded attendees that following the hackathon, connectivity to the public SCION network is available directly from the IETF meeting network.
   * **Q&A:**
-    * **Brian Trammell** asked how the situation where SCION does not reach the host itself on the client side fits into the attack described. Tilmann Zäschke mentioned that this scenario was not considered, but suggested that translation mechanisms like NATs would mapp traffic to unique ports, possibly avoiding the attack.
-    * **Colin Perkins** questioned the assumption of IP uniqueness within a single AS, noting he encountered this issue while working on NAT Traversal. Tilmann Zäschke noted this is not worse than standard QUIC;  port numbers must be taken into account where NAT is present
+    * **Brian Trammell** asked how the situation where SCION does not reach the host itself on the client side fits into the attack described. Tilmann Zäschke mentioned that this scenario was not considered, but suggested that translation mechanisms like NATs would map traffic to unique ports, possibly avoiding the attack.
+    * **Colin Perkins** questioned the assumption of IP uniqueness within a single AS, noting he encountered this issue while working on NAT Traversal. Tilmann Zäschke noted that QUIC over SCION is not worse than standard QUIC;  port numbers must be taken into account where NAT is present
 
 ### 5. Bridging the Gap: Translating TCP/IPv6 to MPTCP/SCION
 * **Presenter:** Lars Christian Schulz
