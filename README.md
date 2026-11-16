@@ -12,3 +12,4 @@ protocol design community.
 
 - [IETF 99 Prague, July 2017](ietf99-prague/agenda.md)
 - [IETF 126 Vienna, July 2026](ietf126-vienna/agenda.md)
+- [IETF 127 San Francisco, November 2026](ietf127-sanfrancisco/agenda.md)
